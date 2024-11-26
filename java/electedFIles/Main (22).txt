@@ -1,0 +1,99 @@
+import java.io.BufferedReader;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+ 
+public class Main {
+	
+	public static double calc(double r, double h){
+		return Math.PI * r * r * h / 3.0;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		final Scanner sc = new Scanner(System.in);
+		
+		final int N = sc.nextInt();
+		final int Q = sc.nextInt();
+		
+		int[] xs = new int[N];
+		int[] rs = new int[N];
+		int[] hs = new int[N];
+		
+		for(int i = 0; i < N; i++){
+			final int x = sc.nextInt();
+			final int r = sc.nextInt();
+			final int h = sc.nextInt();
+			
+			xs[i] = x; rs[i] = r; hs[i] = h;
+		}
+		
+		for(int q = 0; q < Q; q++){
+			final int A = sc.nextInt();
+			final int B = sc.nextInt();
+			
+			double sum = 0;
+			for(int i = 0; i < N; i++){
+				final int max_x = xs[i] + hs[i];
+				final int min_x = xs[i];
+				
+				if(max_x <= A){ continue; }
+				if(min_x >= B){ continue; }
+				
+				final double lower_h = max_x - Math.max(min_x, A);
+				final double lower_r = (lower_h / hs[i]) * rs[i];
+				final double upper_h = Math.max(0, max_x - B);
+				final double upper_r = (upper_h / hs[i]) * rs[i];
+				
+				//System.out.println(":" + calc(lower_r, lower_h) + " : " + calc(upper_r, upper_h));
+				
+				sum += calc(lower_r, lower_h) - (upper_h != 0 ? calc(upper_r, upper_h) : 0);
+			}
+			
+			System.out.printf("%.9f\n", sum);
+		}
+	}
+	
+	public static class Scanner implements Closeable {
+		private BufferedReader br;
+		private StringTokenizer tok;
+ 
+		public Scanner(InputStream is) throws IOException {
+			br = new BufferedReader(new InputStreamReader(is));
+		}
+ 
+		private void getLine() throws IOException {
+			while (!hasNext()) {
+				tok = new StringTokenizer(br.readLine());
+			}
+		}
+ 
+		private boolean hasNext() {
+			return tok != null && tok.hasMoreTokens();
+		}
+ 
+		public String next() throws IOException {
+			getLine();
+			return tok.nextToken();
+		}
+ 
+		public int nextInt() throws IOException {
+			return Integer.parseInt(next());
+		}
+ 
+		public long nextLong() throws IOException {
+			return Long.parseLong(next());
+		}
+		
+		public double nextDouble() throws IOException {
+			return Double.parseDouble(next());
+		}
+		
+		public void close() throws IOException {
+			br.close();
+		}
+	}
+}
